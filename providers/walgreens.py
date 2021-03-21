@@ -1,5 +1,5 @@
 from common.http_request import HttpRequest
-from common.location import Location
+from common.geocoder import Geocoder
 from datetime import datetime
 
 import json
@@ -29,7 +29,7 @@ class Walgreens:
         print("Retrieving Walgreens COVID-19 vaccine appointment availablity data")
         session = HttpRequest.session()
         session = cls._csrf_token(session)
-        location = Location.latitude_longitude_from_address(cls.zip_code)
+        location = Geocoder.latitude_longitude_from_address(cls.zip_code)
         headers = {
             "Referer": "https://www.walgreens.com/findcare/vaccination/covid-19/location-screening"
         }

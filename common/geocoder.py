@@ -2,7 +2,7 @@ from common.http_request import HttpRequest
 
 import urllib
 
-class Location:
+class Geocoder:
     API_BASE_URL = "https://nominatim.openstreetmap.org"
 
     @classmethod
