@@ -30,13 +30,14 @@ class Cvs:
         print(f"Retrieving CVS COVID-19 vaccine appointment availablity data in {cls.state}")
         appts = []
         stores = cls._stores()
+        excluded_locations = [location.lower() for location in os.environ['EXCLUDED_LOCATIONS'].split(",")]
 
         for store in stores:
             city = store['city']
             state = store['state']
             status = store['status'].lower()
 
-            if status == 'available':
+            if status == 'available' and city.lower() not in excluded_locations:
                 print(f"Found CVS store with available appointments in {city}, {state}!")
                 appts.append(f"{city}, {state}")
 
