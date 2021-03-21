@@ -3,6 +3,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: Sends notifications when COVID-19 vaccine appointments are available at certain stores in a specified region
 Parameters:
+  ExcludedLocations:
+    Type: CommaDelimitedList
+    Description: List of locations to exclude
+    Default: ''
   ScheduleExpression:
     Description: Expression for scheduled execution (See https://docs.aws.amazon.com/eventbridge/latest/userguide/scheduled-events.html)
     Type: String
@@ -21,9 +25,6 @@ Parameters:
   ZipCode:
     Type: String
     Description: US Zip Code
-  ExcludedLocations:
-    Type: CommaDelimitedList
-    Description: List of locations to exclude
 Resources:
   Covid19VaccineNotifier:
     Type: AWS::Serverless::Function
@@ -36,7 +37,7 @@ Resources:
       Timeout: 30
       Policies:
         - AWSLambdaBasicExecutionRole
-        - Version: '2012-10-17' 
+        - Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
@@ -56,6 +57,6 @@ Resources:
           ZIP_CODE: !Ref ZipCode
   SnsTopic:
     Type: AWS::SNS::Topic
-    Properties: 
+    Properties:
       DisplayName: covid-19-vaccine-notification
       TopicName: !Ref TopicName

@@ -6,15 +6,27 @@ class HttpRequest:
     }
 
     @classmethod
-    def get(cls, url, headers={}):
+    def get(cls, url, headers={}, session=None):
         headers.update(cls.user_agent)
-        resp = requests.get(url, headers=headers)
+
+        if session is None:
+            resp = requests.get(url, headers=headers)
+        else:
+            resp = session.get(url, headers=headers)
 
         return resp
 
     @classmethod
-    def post(cls, url, headers={}, body=''):
+    def post(cls, url, headers={}, body='', session=None):
         headers.update(cls.user_agent)
-        resp = requests.post(url, json=body, headers=headers)
+
+        if session is None:
+            resp = requests.post(url, json=body, headers=headers)
+        else:
+            resp = session.post(url, json=body, headers=headers)
 
         return resp
+
+    @staticmethod
+    def session():
+        return requests.Session()

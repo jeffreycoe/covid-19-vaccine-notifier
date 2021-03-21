@@ -1,6 +1,7 @@
 from datetime import datetime
 from providers.cvs import Cvs
 from providers.riteaid import RiteAid
+from providers.walgreens import Walgreens
 
 import boto3
 import json
@@ -14,6 +15,9 @@ def build_messages():
 
     message += Cvs.build_message()
     message += RiteAid.build_message()
+    message += Walgreens.build_message()
+
+    message += "\nNote: The available appointments above are not guaranteed and eligibility must be verified."
 
     messages['default'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n\n{message}"
     messages['email'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n\n{message}"
