@@ -1,8 +1,12 @@
-# Needs SNS topic and IAM role resources added to this template
+---
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: Sends notifications when COVID-19 vaccine appointments are available at certain stores in a specified region
 Parameters:
+  ScheduleExpression:
+    Description: Expression for scheduled execution (See https://docs.aws.amazon.com/eventbridge/latest/userguide/scheduled-events.html)
+    Type: String
+    Default: rate(1 hour)
   SearchRadius:
     Type: String
     Description: Search radius for stores in a specified location (in miles)
@@ -10,6 +14,10 @@ Parameters:
   State:
     Type: String
     Description: US State
+  TopicName:
+    Type: String
+    Description: SNS Topic Name
+    Default: covid-19-vaccine-notifications
   ZipCode:
     Type: String
     Description: US Zip Code
@@ -23,15 +31,48 @@ Resources:
       Description: ''
       MemorySize: 128
       Timeout: 30
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/service-role/LambdaCovid19
+      Role: !Ref LambdaExecutionRole
       Events:
-        Schedule1:
+        ScheduledExecution:
           Type: Schedule
           Properties:
-            Schedule: rate(1 hour)
+            Schedule: !Ref ScheduleExpression
       Environment:
         Variables:
           SEARCH_RADIUS: !Ref SearchRadius
-          SNS_TOPIC_ARN: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:covid-19-vaccine-notifications'
+          SNS_TOPIC_ARN: !Ref SnsTopic
           STATE: !Ref State
           ZIP_CODE: !Ref ZipCode
+  SnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Lambda execution role for COVID-19 Vaccine Notifier
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaExecute
+      RoleName: LambdaCovid19Notifier
+  LambdaSnsPublishIamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LambdaSnsPublishPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - sns:Publish
+            Resource: arn:aws:sns:*:*:*
+      Roles:
+        - !Ref LambdaExecutionRole

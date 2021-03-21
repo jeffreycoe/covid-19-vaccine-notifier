@@ -1,10 +1,29 @@
-from common.http import Http
+from common.http_request import HttpRequest
 
 import json
 import os
 
 class Cvs:
     state = os.environ['STATE']
+
+    @classmethod
+    def build_message(cls):
+        print("Building message for CVS")
+        stores = cls.vaccine_availability()
+        message = ''
+
+        if len(stores) == 0:
+            message += "No CVS stores have available COVID-19 vaccine appointments.\n"
+            return message
+
+        message += "CVS Stores:\n\n"
+
+        for store in stores.items():
+            message += f"{store}\n"
+
+        message += "\nCVS Appointment Scheduler: https://www.cvs.com/immunizations/covid-19-vaccine\n\n"
+
+        return message
 
     @classmethod
     def vaccine_availability(cls):
@@ -16,22 +35,22 @@ class Cvs:
             city = store['city']
             state = store['state']
             status = store['status'].lower()
-            
+
             if status == 'available':
                 print(f"Found CVS store with available appointments in {city}, {state}!")
                 appts.append(f"{city}, {state}")
-        
+
         if len(appts) == 0:
             print(f"No CVS stores have available appointments in {cls.state}.")
 
         return appts
-        
+
     @classmethod
     def _stores(cls):
         headers = {
             "Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"
         }
         url = f"https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{cls.state}.json"
-        resp = Http.get(url, headers)
+        resp = HttpRequest.get(url, headers)
         data = json.loads(resp.data.decode('utf-8'))['responsePayloadData']['data'][cls.state]
         return data
