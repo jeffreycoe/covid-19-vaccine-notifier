@@ -14,7 +14,7 @@ class RiteAid:
         message = ''
 
         if len(stores) == 0:
-            message += "No Rite Aid stores have available COVID-19 vaccine appointments.\n"
+            message += "No Rite Aid stores have available COVID-19 vaccine appointments.\n\n"
             return message
 
         message += "Rite Aid Stores:\n\n"

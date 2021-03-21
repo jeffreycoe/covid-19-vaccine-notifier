@@ -6,7 +6,7 @@ import boto3
 import json
 import os
 
-def build_messages(stores):
+def build_messages():
     print("Building notification message")
     messages = { 'email': '', 'sms': '' }
     time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
@@ -15,15 +15,15 @@ def build_messages(stores):
     message += Cvs.build_message()
     message += RiteAid.build_message()
 
-    messages['default'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n{message}"
-    messages['email'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n{message}"
+    messages['default'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n\n{message}"
+    messages['email'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n\n{message}"
 
     return messages
 
 def lambda_handler(event, context):
     print("Checking COVID-19 vaccine site availability")
 
-    messages = build_messages(stores)
+    messages = build_messages()
     publish_notification(messages)
 
 def publish_notification(messages):

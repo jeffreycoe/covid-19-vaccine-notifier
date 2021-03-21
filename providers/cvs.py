@@ -13,12 +13,12 @@ class Cvs:
         message = ''
 
         if len(stores) == 0:
-            message += "No CVS stores have available COVID-19 vaccine appointments.\n"
+            message += "No CVS stores have available COVID-19 vaccine appointments.\n\n"
             return message
 
         message += "CVS Stores:\n\n"
 
-        for store in stores.items():
+        for store in stores:
             message += f"{store}\n"
 
         message += "\nCVS Appointment Scheduler: https://www.cvs.com/immunizations/covid-19-vaccine\n\n"
