@@ -52,5 +52,5 @@ class Cvs:
         }
         url = f"https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{cls.state}.json"
         resp = HttpRequest.get(url, headers)
-        data = json.loads(resp.data.decode('utf-8'))['responsePayloadData']['data'][cls.state]
+        data = resp.json()['responsePayloadData']['data'][cls.state]
         return data

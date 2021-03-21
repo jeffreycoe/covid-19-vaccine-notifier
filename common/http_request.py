@@ -1,4 +1,4 @@
-import urllib3
+import requests
 
 class HttpRequest:
     user_agent = {
@@ -8,15 +8,13 @@ class HttpRequest:
     @classmethod
     def get(cls, url, headers={}):
         headers.update(cls.user_agent)
-        http = urllib3.PoolManager()
-        resp = http.request('GET', url, headers=headers)
+        resp = requests.get(url, headers=headers)
 
         return resp
 
     @classmethod
     def post(cls, url, headers={}, body=''):
         headers.update(cls.user_agent)
-        http = urllib3.PoolManager()
-        resp = http.post('POST', url, headers=headers, body=body)
+        resp = requests.post(url, json=body, headers=headers)
 
         return resp

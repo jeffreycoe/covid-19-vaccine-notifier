@@ -65,7 +65,7 @@ Resources:
   LambdaSnsPublishIamPolicy:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: LambdaSnsPublishPolicy
+      PolicyName: LambdaCovid19SnsPublishPolicy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
