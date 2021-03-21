@@ -15,8 +15,8 @@ def build_messages(stores):
     message += Cvs.build_message()
     message += RiteAid.build_message()
 
-    messages['default'] = f"As of {time}, the following stores have COVID-19 vaccine appointments:\n{message}"
-    messages['email'] = f"As of {time}, the following stores have COVID-19 vaccine appointments:\n{message}"
+    messages['default'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n{message}"
+    messages['email'] = f"As of {time} UTC, the following stores have COVID-19 vaccine appointments:\n{message}"
 
     return messages
 
