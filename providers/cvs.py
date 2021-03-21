@@ -4,6 +4,7 @@ import json
 import os
 
 class Cvs:
+    availability = False
     state = os.environ['STATE']
 
     @classmethod
@@ -44,6 +45,7 @@ class Cvs:
         if len(appts) == 0:
             print(f"No CVS stores have available appointments in {cls.state}.")
 
+        cls.availability = True
         return appts
 
     @classmethod

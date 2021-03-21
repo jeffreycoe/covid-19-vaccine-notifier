@@ -6,7 +6,7 @@ import json
 import os
 
 class Walgreens:
-
+    availability = False
     search_radius = os.environ['SEARCH_RADIUS']
     zip_code = os.environ['ZIP_CODE']
 
@@ -20,7 +20,7 @@ class Walgreens:
             message += f"Walgreens stores near {cls.zip_code} have vaccine appointments available!\n\n"
             message += "Walgreens Appointment Scheduler: https://www.walgreens.com/findcare/vaccination/covid-19/location-screening\n\n"
         else:
-            message += "No Walgreens stores have available COVID-19 vaccine appointments.\n\n"
+            message += f"No Walgreens stores have available COVID-19 vaccine appointments near {cls.zip_code}.\n\n"
 
         return message
 
@@ -55,6 +55,7 @@ class Walgreens:
 
         if data['appointmentsAvailable'] == True:
             print(f"Found available appointments at Walgreens!")
+            cls.availability = True
             return True
         else:
             print(f"No Walgreens stores have available appointments near {cls.zip_code}.")

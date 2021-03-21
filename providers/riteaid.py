@@ -4,6 +4,7 @@ import json
 import os
 
 class RiteAid:
+    availability = False
     search_radius = os.environ['SEARCH_RADIUS']
     zip_code = os.environ['ZIP_CODE']
 
@@ -48,6 +49,7 @@ class RiteAid:
         if len(appts) == 0:
             print(f"No Rite Aid stores have available appointments in a {cls.search_radius} mile radius of {cls.zip_code}.")
 
+        cls.availability = True
         return appts
 
     @classmethod

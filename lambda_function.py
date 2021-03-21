@@ -24,11 +24,21 @@ def build_messages():
 
     return messages
 
+def skip_publish_notification():
+    availability = [Cvs.availability, RiteAid.availability, Walgreens.availability]
+    skip_publish = all(entry == False for entry in availability)
+
+    return skip_publish
+
 def lambda_handler(event, context):
     print("Checking COVID-19 vaccine site availability")
 
     messages = build_messages()
-    publish_notification(messages)
+
+    if skip_publish_notification():
+        print(f"Skipping publishing message to SNS topic as no stores have vaccine appointment availability.")
+    else:
+        publish_notification(messages)
 
 def publish_notification(messages):
     topic_arn = os.environ['SNS_TOPIC_ARN']
