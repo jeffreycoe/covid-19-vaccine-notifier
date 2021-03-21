@@ -19,7 +19,7 @@ class RiteAid:
 
         message += "Rite Aid Stores:\n\n"
 
-        for store in stores.items():
+        for store in stores:
             message += f"Store Number: {store['store_number']}\n"\
                      + f"Address: {store['address']}\n"\
                      + f"Phone Number: {store['phone_number']}\n\n"
