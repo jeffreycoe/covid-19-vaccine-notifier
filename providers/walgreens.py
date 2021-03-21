@@ -58,7 +58,7 @@ class Walgreens:
             print(f"Found available appointments at Walgreens!")
             return True
         else:
-            print(f"No Walgreens stores have available appointments near {cls.zip_code}.")
+            print(f"No Walgreens stores have available vaccine appointments.")
             return False
 
     @classmethod
