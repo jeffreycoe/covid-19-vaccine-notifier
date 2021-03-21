@@ -33,29 +33,31 @@ class RiteAid:
     def vaccine_availability(cls):
         print("Retrieving Rite Aid COVID-19 vaccine appointment availablity data")
         appts = []
+        http = HttpRequest()
         stores = cls._stores()
 
         for store in stores:
             store_number = store['storeNumber']
             url = f"https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber={store_number}"
-            resp = HttpRequest.get(url)
+            resp = http.get(url)
             slots = resp.json()['Data']['slots']
             if (slots["1"] == True or slots["2"] == True):
                 address = f"{store['address']} {store['city']}, {store['state']} {store['zipcode']}"
                 phone_number = store['fullPhone']
                 print(f"Found available appointment at Rite Aid store {store_number}!")
+                cls.availability = True
                 appts.append({ 'address': address, 'phone_number': phone_number, 'store_number': store_number })
 
         if len(appts) == 0:
             print(f"No Rite Aid stores have available appointments in a {cls.search_radius} mile radius of {cls.zip_code}.")
 
-        cls.availability = True
         return appts
 
     @classmethod
     def _stores(cls):
         print(f"Retrieving Rite Aid stores within a {cls.search_radius} mile radius in {cls.zip_code}")
         url = f"https://www.riteaid.com/services/ext/v2/stores/getStores?address={cls.zip_code}&attrFilter=PREF-112&fetchMechanismVersion=2&radius={cls.search_radius}"
-        resp = HttpRequest.get(url)
+        http = HttpRequest()
+        resp = http.get(url)
         stores = resp.json()['Data']['stores']
         return stores

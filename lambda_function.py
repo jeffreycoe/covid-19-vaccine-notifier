@@ -34,8 +34,9 @@ def lambda_handler(event, context):
     print("Checking COVID-19 vaccine site availability")
 
     messages = build_messages()
+    skip_publish = skip_publish_notification()
 
-    if skip_publish_notification():
+    if skip_publish == True:
         print(f"Skipping publishing message to SNS topic as no stores have vaccine appointment availability.")
     else:
         publish_notification(messages)

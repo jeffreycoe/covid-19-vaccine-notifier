@@ -40,12 +40,12 @@ class Cvs:
 
             if status == 'available' and city.lower() not in excluded_locations:
                 print(f"Found CVS store with available appointments in {city}, {state}!")
+                cls.availability = True
                 appts.append(f"{city}, {state}")
 
         if len(appts) == 0:
             print(f"No CVS stores have available appointments in {cls.state}.")
 
-        cls.availability = True
         return appts
 
     @classmethod
@@ -54,6 +54,7 @@ class Cvs:
             "Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"
         }
         url = f"https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{cls.state}.json"
-        resp = HttpRequest.get(url, headers)
+        http = HttpRequest()
+        resp = http.get(url, headers)
         data = resp.json()['responsePayloadData']['data'][cls.state]
         return data

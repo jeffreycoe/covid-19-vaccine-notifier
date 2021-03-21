@@ -27,8 +27,8 @@ class Walgreens:
     @classmethod
     def vaccine_availability(cls):
         print("Retrieving Walgreens COVID-19 vaccine appointment availablity data")
-        session = HttpRequest.session()
-        session = cls._csrf_token(session)
+        http = HttpRequest()
+        session = cls._csrf_token(http)
         location = Geocoder.latitude_longitude_from_address(cls.zip_code)
         headers = {
             "Referer": "https://www.walgreens.com/findcare/vaccination/covid-19/location-screening"
@@ -45,29 +45,27 @@ class Walgreens:
             "radius": 25
         }
         url = "https://www.walgreens.com/hcschedulersvc/svc/v1/immunizationLocations/availability"
-        resp = HttpRequest.post(url, headers, body, session)
+        resp = http.post(url, headers, body)
 
         if resp.ok != True:
             print(f"Failed to connect to Walgreens. HTTP Response Code: {resp.status_code} Body: {resp.json()}")
             return False
 
         data = resp.json()
+        cls.availability = data['appointmentsAvailable']
 
         if data['appointmentsAvailable'] == True:
             print(f"Found available appointments at Walgreens!")
-            cls.availability = True
             return True
         else:
             print(f"No Walgreens stores have available appointments near {cls.zip_code}.")
             return False
 
     @classmethod
-    def _csrf_token(cls, session):
+    def _csrf_token(cls, http):
         headers = {}
         url = "https://www.walgreens.com/browse/v1/csrf"
-        resp = HttpRequest.get(url, headers, session)
+        resp = http.get(url, headers)
         data = resp.json()
 
-        session.headers.update({ data['csrfHeaderName']: data['csrfToken'] })
-
-        return session
+        http.session.headers.update({ data['csrfHeaderName']: data['csrfToken'] })
